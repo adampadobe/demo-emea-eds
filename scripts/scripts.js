@@ -107,10 +107,16 @@ async function loadEager(doc) {
 
   // AEP / MarTech: replace YOUR_DATASTREAM_ID and YOUR_ORG_ID with your AEP datastream and IMS org ID
   const isConsentGiven = true; /* hook in your consent logic for production */
+  // Enable Web SDK (alloy) console logs: preview/localhost always; add ?debug=alloy to live URL to see logs
+  const alloyDebug = window.location.hostname === 'localhost'
+    || window.location.hostname.endsWith('.aem.page')
+    || window.location.search.includes('debug=alloy');
+
   const martechLoadedPromise = initMartech(
     {
       datastreamId: 'cd2c9528-abe4-4593-aa31-56a9135be5d9',
       orgId: 'BF9C27AA6464801C0A495FD0@AdobeOrg',
+      debugEnabled: alloyDebug,
       onBeforeEventSend: (payload) => {
         // Required by demoemea schema so streaming validation passes (DCVS-1106-400).
         if (payload.xdm) {

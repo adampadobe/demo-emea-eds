@@ -8,7 +8,7 @@ In **`scripts/scripts.js`**, the following are set in `loadEager` (replace if yo
 
 | Placeholder           | Where to get it | This project |
 |-----------------------|-----------------|---------------|
-| Datastream ID         | AEP Data Collection → Datastreams → your datastream → ID | `a4491795-cfd8-48db-b614-dcaa0368c10a` ✓ |
+| Datastream ID         | AEP Data Collection → Datastreams → your datastream → ID | `cd2c9528-abe4-4593-aa31-56a9135be5d9` ✓ |
 | Org ID               | Admin Console or AEP URL (org value) | `BF9C27AA6464801C0A495FD0@AdobeOrg` ✓ |
 
 Both are configured; the Web SDK will send events to your datastream when the site loads.

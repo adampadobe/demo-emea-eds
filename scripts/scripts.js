@@ -108,7 +108,7 @@ async function loadEager(doc) {
   const isConsentGiven = true; /* hook in your consent logic for production */
   const martechLoadedPromise = initMartech(
     {
-      datastreamId: 'a4491795-cfd8-48db-b614-dcaa0368c10a',
+      datastreamId: 'cd2c9528-abe4-4593-aa31-56a9135be5d9',
       orgId: 'BF9C27AA6464801C0A495FD0@AdobeOrg',
       onBeforeEventSend: (payload) => {
         // optional: modify payload or return false to drop event

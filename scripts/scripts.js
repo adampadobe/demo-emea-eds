@@ -126,6 +126,8 @@ async function loadEager(doc) {
     onBeforeEventSend: (payload) => {
       if (payload.xdm) {
         payload.xdm._demoemea = payload.xdm._demoemea || {};
+        // Schema requires _demoemea.identification; satisfy streaming validation
+        payload.xdm._demoemea.identification = payload.xdm._demoemea.identification || {};
       }
       return true;
     },

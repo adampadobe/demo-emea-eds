@@ -13,14 +13,6 @@ import {
   loadCSS,
   getMetadata,
 } from './aem.js';
-import {
-  initMartech,
-  updateUserConsent,
-  martechEager,
-  martechLazy,
-  martechDelayed,
-} from '../plugins/martech/src/index.js';
-
 /**
  * Builds hero block and prepends to main in a new section.
  * @param {Element} main The container element
@@ -105,66 +97,17 @@ async function loadEager(doc) {
   document.documentElement.lang = 'en';
   decorateTemplateAndTheme();
 
-  // AEP / MarTech: replace YOUR_DATASTREAM_ID and YOUR_ORG_ID with your AEP datastream and IMS org ID
-  const isConsentGiven = true; /* hook in your consent logic for production */
-  // Enable Web SDK (alloy) console logs: preview/localhost always; add ?debug=alloy to live URL to see logs
-  const alloyDebug = window.location.hostname === 'localhost'
-    || window.location.hostname.endsWith('.aem.page')
-    || window.location.search.includes('debug=alloy');
-
-  // Web push: same App ID as in Journey Optimizer > Push credentials (for push-opt-in block).
-  // Web SDK requires trackingDatasetId (AJO Push Tracking Experience Event Dataset in AEP); omit pushNotifications until set.
+  // Web SDK is loaded and configured via Adobe Launch (Tags) – see head.html and AEP_CONFIG.md.
+  // Push opt-in block needs this so it can call alloy('sendPushSubscription') after user grants permission.
   const PUSH_APP_ID = 'demo-emea-eds-web';
   const VAPID_PUBLIC_KEY = 'BLHda1pyWwF9FBI-pGP0ihaMVINkpegv9aeZorxeH4qXRkqGU53W3NFgpFxQj5TQWXo9g8Y13MkDfx1oq0WUbdQ';
-  const PUSH_TRACKING_DATASET_ID = '64f5c1ce8a5c5f28d3434c44'; // AJO Push Tracking Experience Event Dataset
   window.__pushConfig = { applicationId: PUSH_APP_ID, vapidPublicKey: VAPID_PUBLIC_KEY };
-
-  const webSDKConfig = {
-    datastreamId: 'cd2c9528-abe4-4593-aa31-56a9135be5d9',
-    orgId: 'BF9C27AA6464801C0A495FD0@AdobeOrg',
-    debugEnabled: alloyDebug,
-    onBeforeEventSend: (payload) => {
-      if (payload.xdm) {
-        payload.xdm._demoemea = payload.xdm._demoemea || {};
-        // Schema requires _demoemea.identification; satisfy streaming validation
-        payload.xdm._demoemea.identification = payload.xdm._demoemea.identification || {};
-      }
-      return true;
-    },
-  };
-  if (PUSH_TRACKING_DATASET_ID) {
-    webSDKConfig.pushNotifications = {
-      vapidPublicKey: VAPID_PUBLIC_KEY,
-      applicationId: PUSH_APP_ID,
-      trackingDatasetId: PUSH_TRACKING_DATASET_ID,
-    };
-  }
-
-  const martechLoadedPromise = initMartech(
-    webSDKConfig,
-    {
-      personalization: !!getMetadata('target') && isConsentGiven,
-      launchUrls: [], // add your Launch script URLs when ready
-    },
-  ).then(async () => {
-    // Grant consent so the Web SDK sends events (required when defaultConsent is 'pending').
-    // For production, replace with your CMP (e.g. OneTrust, consent banner) and call updateUserConsent when the user opts in.
-    if (isConsentGiven) {
-      await updateUserConsent({
-        collect: true,
-        marketing: true,
-        personalize: true,
-        share: false,
-      });
-    }
-  });
 
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
     document.body.classList.add('appear');
     await Promise.all([
-      martechLoadedPromise.then(martechEager),
       loadSection(main.querySelector('.section'), waitForFirstImage),
     ]);
   }
@@ -194,7 +137,6 @@ async function loadLazy(doc) {
   if (hash && element) element.scrollIntoView();
 
   loadFooter(doc.querySelector('footer'));
-  await martechLazy();
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
@@ -206,7 +148,6 @@ async function loadLazy(doc) {
  */
 function loadDelayed() {
   window.setTimeout(() => {
-    martechDelayed();
     // eslint-disable-next-line import/no-cycle
     import('./delayed.js');
   }, 3000);

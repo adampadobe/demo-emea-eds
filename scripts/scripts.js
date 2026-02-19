@@ -112,7 +112,11 @@ async function loadEager(doc) {
       datastreamId: 'cd2c9528-abe4-4593-aa31-56a9135be5d9',
       orgId: 'BF9C27AA6464801C0A495FD0@AdobeOrg',
       onBeforeEventSend: (payload) => {
-        // optional: modify payload or return false to drop event
+        // Required by demoemea schema so streaming validation passes (DCVS-1106-400).
+        if (payload.xdm) {
+          payload.xdm._demoemea = payload.xdm._demoemea || {};
+        }
+        return true;
       },
     },
     {

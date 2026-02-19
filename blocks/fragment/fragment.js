@@ -7,6 +7,7 @@
 // eslint-disable-next-line import/no-cycle
 import {
   decorateMain,
+  trackPageView,
 } from '../../scripts/scripts.js';
 
 import {
@@ -36,6 +37,7 @@ export async function loadFragment(path) {
 
       decorateMain(main);
       await loadSections(main);
+      trackPageView();
       return main;
     }
   }

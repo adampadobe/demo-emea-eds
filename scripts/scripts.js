@@ -93,11 +93,26 @@ export function decorateMain(main) {
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
  */
+const LAUNCH_SCRIPT_URL = 'https://assets.adobedtm.com/60e5fd51ad90/fa96647dd60a/launch-bf568e01298a-development.min.js';
+
+/**
+ * Fire Launch custom event for page view (for SPA/fragment navigation; full page load uses ecid-ready in Launch).
+ */
+export function trackPageView() {
+  if (typeof window._satellite !== 'undefined') window._satellite.track('page-view');
+}
+
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
   decorateTemplateAndTheme();
 
-  // Web SDK is loaded and configured via Adobe Launch (Tags) – see head.html and AEP_CONFIG.md.
+  // Load Launch via JS so CSP strict-dynamic allows it (script loaded by nonced scripts.js is trusted).
+  const launchScript = document.createElement('script');
+  launchScript.src = LAUNCH_SCRIPT_URL;
+  launchScript.async = true;
+  document.head.appendChild(launchScript);
+
+  // Web SDK is loaded and configured via Adobe Launch (Tags) – see AEP_CONFIG.md.
   // Push opt-in block needs this so it can call alloy('sendPushSubscription') after user grants permission.
   const PUSH_APP_ID = 'demo-emea-eds-web';
   const VAPID_PUBLIC_KEY = 'BLHda1pyWwF9FBI-pGP0ihaMVINkpegv9aeZorxeH4qXRkqGU53W3NFgpFxQj5TQWXo9g8Y13MkDfx1oq0WUbdQ';

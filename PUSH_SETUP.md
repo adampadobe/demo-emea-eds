@@ -43,9 +43,13 @@ This project is configured for web push with Adobe Journey Optimizer. Complete t
 
 ## Step 3: On the site (already implemented)
 
-- **Web SDK** only passes `pushNotifications` when `PUSH_TRACKING_DATASET_ID` is set in `scripts/scripts.js` (the SDK requires `trackingDatasetId`; omitting it avoids a runtime error). The push opt-in block and `sendPushSubscription` still work without it. To enable push *and* open/click tracking in AEP, set `PUSH_TRACKING_DATASET_ID` to the AJO Push Tracking dataset ID (see Optional section below).
+- **Web SDK** is configured via Launch (Tags) with push notifications in the extension. The push opt-in block and `sendPushSubscription` work with that.
 - **Push opt-in block:** add a **push-opt-in** block in your page content; users who click it get a subscription and it is sent via `alloy('sendPushSubscription', { subscription })`.
-- **Service worker:** `/sw.js` is registered when the user opts in and is used to receive push messages.
+- **Service workers:**
+  - **Launch “Web Push” rule** registers the Adobe Alloy service worker for push (open/click tracking). This repo includes the worker so it can be served from your origin:
+    - **`/web/alloyServiceWorker.js`** – use this path in Launch if your EDS deployment serves the `web/` folder.
+    - If you get a 404 for `/web/alloyServiceWorker.js` after deploy, in Launch change the Web Push rule to register **`/alloyServiceWorker.min.js`** with scope **`/`** (file is at repo root).
+  - **`/sw.js`** – custom worker used when the user opts in via the push-opt-in block (receives push, can coexist with the Alloy worker depending on scope).
 
 ---
 

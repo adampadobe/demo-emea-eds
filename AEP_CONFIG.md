@@ -1,18 +1,14 @@
 # AEP (Adobe Experience Platform) connection
 
-This site loads the Web SDK (Alloy) via **Adobe Launch (Tags)** instead of calling the SDK directly. The Launch script is included in `head.html`; all datastream, consent, and push configuration is done in the Launch property.
+This site loads the Web SDK (Alloy) via **Adobe Launch (Tags)** instead of calling the SDK directly. The Launch script is loaded from `scripts/scripts.js` (to satisfy CSP); all datastream, consent, and push configuration is done in the Launch property.
 
 ## 1. Set your Launch embed URL
 
-In **`head.html`**, replace the placeholder script `src` with your Launch property embed URL:
+In **`scripts/scripts.js`**, set `LAUNCH_SCRIPT_URL` to your Launch property embed URL (loaded from JS to satisfy CSP strict-dynamic). To get the URL:
 
 - In **Data Collection** (experience.adobe.com/data-collection), open your property → **Install** (or **Environments**).
-- Copy the **Development** (or **Staging** / **Production**) embed code.
-- In `head.html`, replace:
-  ```html
-  <script src="https://assets.adobetarget.com/YOUR_LAUNCH_EMBED_URL.min.js" async></script>
-  ```
-  with the actual script tag (e.g. `https://assets.adobetarget.com/.../launch-xxx.min.js`).
+- Copy the script URL from the embed code (e.g. `https://assets.adobedtm.com/.../launch-xxx-development.min.js`).
+- In **`scripts/scripts.js`**, set `LAUNCH_SCRIPT_URL` to that URL.
 
 ## 2. Configure in Launch
 

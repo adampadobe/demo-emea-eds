@@ -15,6 +15,7 @@ import {
 } from './aem.js';
 import {
   initMartech,
+  updateUserConsent,
   martechEager,
   martechLazy,
   martechDelayed,
@@ -118,7 +119,18 @@ async function loadEager(doc) {
       personalization: !!getMetadata('target') && isConsentGiven,
       launchUrls: [], // add your Launch script URLs when ready
     },
-  );
+  ).then(async () => {
+    // Grant consent so the Web SDK sends events (required when defaultConsent is 'pending').
+    // For production, replace with your CMP (e.g. OneTrust, consent banner) and call updateUserConsent when the user opts in.
+    if (isConsentGiven) {
+      await updateUserConsent({
+        collect: true,
+        marketing: true,
+        personalize: true,
+        share: false,
+      });
+    }
+  });
 
   const main = doc.querySelector('main');
   if (main) {

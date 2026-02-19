@@ -11,7 +11,14 @@ import {
   loadSection,
   loadSections,
   loadCSS,
+  getMetadata,
 } from './aem.js';
+import {
+  initMartech,
+  martechEager,
+  martechLazy,
+  martechDelayed,
+} from '../plugins/martech/src/index.js';
 
 /**
  * Builds hero block and prepends to main in a new section.
@@ -96,11 +103,31 @@ export function decorateMain(main) {
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
   decorateTemplateAndTheme();
+
+  // AEP / MarTech: replace YOUR_DATASTREAM_ID and YOUR_ORG_ID with your AEP datastream and IMS org ID
+  const isConsentGiven = true; /* hook in your consent logic for production */
+  const martechLoadedPromise = initMartech(
+    {
+      datastreamId: 'a4491795-cfd8-48db-b614-dcaa0368c10a',
+      orgId: 'BF9C27AA6464801C0A495FD0@AdobeOrg',
+      onBeforeEventSend: (payload) => {
+        // optional: modify payload or return false to drop event
+      },
+    },
+    {
+      personalization: !!getMetadata('target') && isConsentGiven,
+      launchUrls: [], // add your Launch script URLs when ready
+    },
+  );
+
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
     document.body.classList.add('appear');
-    await loadSection(main.querySelector('.section'), waitForFirstImage);
+    await Promise.all([
+      martechLoadedPromise.then(martechEager),
+      loadSection(main.querySelector('.section'), waitForFirstImage),
+    ]);
   }
 
   try {
@@ -128,6 +155,7 @@ async function loadLazy(doc) {
   if (hash && element) element.scrollIntoView();
 
   loadFooter(doc.querySelector('footer'));
+  await martechLazy();
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
@@ -138,9 +166,11 @@ async function loadLazy(doc) {
  * without impacting the user experience.
  */
 function loadDelayed() {
-  // eslint-disable-next-line import/no-cycle
-  window.setTimeout(() => import('./delayed.js'), 3000);
-  // load anything that can be postponed to the latest here
+  window.setTimeout(() => {
+    martechDelayed();
+    // eslint-disable-next-line import/no-cycle
+    import('./delayed.js');
+  }, 3000);
 }
 
 async function loadPage() {

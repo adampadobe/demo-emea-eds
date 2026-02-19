@@ -84,9 +84,17 @@ function promiseWithTimeout(promise, timeout = 1000) {
  * @throws a decorated error that can be intercepted by RUM handlers.
  */
 function handleRejectedPromise(error) {
-  const [, file, line] = error.stack.split('\n')[1].trim().split(' ')[1].match(/(.*):(\d+):(\d+)/);
-  error.sourceURL = file;
-  error.line = line;
+  try {
+    const secondLine = error.stack && error.stack.split('\n')[1];
+    const match = secondLine && secondLine.trim().split(' ')[1]?.match(/(.*):(\d+):(\d+)/);
+    if (match) {
+      const [, file, line] = match;
+      error.sourceURL = file;
+      error.line = line;
+    }
+  } catch (e) {
+    // ignore parse failures so we still throw the original error
+  }
   throw error;
 }
 

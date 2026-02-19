@@ -43,7 +43,7 @@ This project is configured for web push with Adobe Journey Optimizer. Complete t
 
 ## Step 3: On the site (already implemented)
 
-- **Web SDK** is configured with `pushNotifications` (vapidPublicKey, applicationId) in `scripts/scripts.js`.
+- **Web SDK** only passes `pushNotifications` when `PUSH_TRACKING_DATASET_ID` is set in `scripts/scripts.js` (the SDK requires `trackingDatasetId`; omitting it avoids a runtime error). The push opt-in block and `sendPushSubscription` still work without it. To enable push *and* open/click tracking in AEP, set `PUSH_TRACKING_DATASET_ID` to the AJO Push Tracking dataset ID (see Optional section below).
 - **Push opt-in block:** add a **push-opt-in** block in your page content; users who click it get a subscription and it is sent via `alloy('sendPushSubscription', { subscription })`.
 - **Service worker:** `/sw.js` is registered when the user opts in and is used to receive push messages.
 

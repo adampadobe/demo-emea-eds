@@ -112,11 +112,20 @@ async function loadEager(doc) {
     || window.location.hostname.endsWith('.aem.page')
     || window.location.search.includes('debug=alloy');
 
+  // Web push: same App ID as in Journey Optimizer > Push credentials (for push-opt-in block)
+  const PUSH_APP_ID = 'demo-emea-eds-web';
+  const VAPID_PUBLIC_KEY = 'BLHda1pyWwF9FBI-pGP0ihaMVINkpegv9aeZorxeH4qXRkqGU53W3NFgpFxQj5TQWXo9g8Y13MkDfx1oq0WUbdQ';
+  window.__pushConfig = { applicationId: PUSH_APP_ID, vapidPublicKey: VAPID_PUBLIC_KEY };
+
   const martechLoadedPromise = initMartech(
     {
       datastreamId: 'cd2c9528-abe4-4593-aa31-56a9135be5d9',
       orgId: 'BF9C27AA6464801C0A495FD0@AdobeOrg',
       debugEnabled: alloyDebug,
+      pushNotifications: {
+        vapidPublicKey: VAPID_PUBLIC_KEY,
+        applicationId: PUSH_APP_ID,
+      },
       onBeforeEventSend: (payload) => {
         // Required by demoemea schema so streaming validation passes (DCVS-1106-400).
         if (payload.xdm) {

@@ -11,3 +11,7 @@ helix-importer-ui
 # Ensure these files are tracked
 !CLAUDE.md
 !AGENTS.md
+
+# Web push: private key for AJO only (never commit)
+vapid-private.txt
+push-credentials.txt

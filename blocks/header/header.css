@@ -1,9 +1,10 @@
-/* header and nav layout */
+/* header and nav layout - Etihad-inspired dark theme */
 header .nav-wrapper {
-  background-color: var(--background-color);
+  background-color: var(--dark-color);
   width: 100%;
   z-index: 2;
   position: fixed;
+  border-bottom: 1px solid rgba(217, 131, 28, 0.2); /* Subtle gold border */
 }
 
 header nav {
@@ -55,7 +56,12 @@ header nav p {
 }
 
 header nav a:any-link {
-  color: currentcolor;
+  color: var(--text-color);
+  transition: color 0.2s ease;
+}
+
+header nav a:any-link:hover {
+  color: var(--accent-gold);
 }
 
 /* hamburger */

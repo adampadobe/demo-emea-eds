@@ -11,17 +11,20 @@
  */
 
 :root {
-  /* colors */
-  --background-color: white;
-  --light-color: #f8f8f8;
-  --dark-color: #505050;
-  --text-color: #131313;
-  --link-color: #3b63fb;
-  --link-hover-color: #1d3ecf;
+  /* Etihad-inspired color palette */
+  --background-color: #2a2520; /* Midnight dune - dark brown/grey */
+  --light-color: #3d3630; /* Lighter dark for sections */
+  --dark-color: #1a1613; /* Darker for contrast */
+  --text-color: #ffffff; /* White text on dark */
+  --text-secondary: #c9c8ba; /* Silver/grey for secondary text */
+  --link-color: #d3831c; /* Gold/chocolate accent */
+  --link-hover-color: #e89a2e; /* Lighter gold on hover */
+  --accent-gold: #d3831c; /* Primary gold */
+  --accent-silver: #c9c8ba; /* Silver accent */
 
-  /* fonts */
-  --body-font-family: roboto, roboto-fallback, sans-serif;
-  --heading-font-family: roboto-condensed, roboto-condensed-fallback, sans-serif;
+  /* fonts - humanistic sans-serif similar to Etihad Altis */
+  --body-font-family: 'Source Sans Pro', 'Inter', roboto, roboto-fallback, sans-serif;
+  --heading-font-family: 'Source Sans Pro', 'Inter', roboto-condensed, roboto-condensed-fallback, sans-serif;
 
   /* body sizes */
   --body-font-size-m: 22px;
@@ -78,6 +81,7 @@ body {
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-m);
   line-height: 1.6;
+  min-height: 100vh;
 }
 
 body.appear {
@@ -137,9 +141,18 @@ pre {
 pre {
   padding: 16px;
   border-radius: 8px;
-  background-color: var(--light-color);
+  background-color: var(--dark-color);
+  border: 1px solid rgba(217, 131, 28, 0.2);
   overflow-x: auto;
   white-space: pre;
+  color: var(--text-color);
+}
+
+code {
+  background-color: var(--dark-color);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--accent-gold);
 }
 
 main > div {
@@ -153,11 +166,36 @@ button {
   font: inherit;
 }
 
+input,
+textarea,
+select {
+  background-color: var(--light-color);
+  border: 1px solid rgba(217, 131, 28, 0.3);
+  color: var(--text-color);
+  padding: 0.5em 0.75em;
+  border-radius: 4px;
+  transition: border-color 0.2s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 0 2px rgba(217, 131, 28, 0.2);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-secondary);
+}
+
 /* links */
 a:any-link {
-  color: var(--link-color);
+  color: var(--accent-gold);
   text-decoration: none;
   overflow-wrap: break-word;
+  transition: color 0.2s ease;
 }
 
 a:hover {
@@ -165,7 +203,7 @@ a:hover {
   text-decoration: underline;
 }
 
-/* buttons */
+/* buttons - Etihad gold accent style */
 a.button:any-link,
 button {
   box-sizing: border-box;
@@ -173,20 +211,21 @@ button {
   max-width: 100%;
   margin: 12px 0;
   border: 2px solid transparent;
-  border-radius: 2.4em;
-  padding: 0.5em 1.2em;
+  border-radius: 4px; /* Less rounded, more modern */
+  padding: 0.75em 1.5em;
   font-family: var(--body-font-family);
   font-style: normal;
-  font-weight: 500;
-  line-height: 1.25;
+  font-weight: 600;
+  line-height: 1.4;
   text-align: center;
   text-decoration: none;
-  background-color: var(--link-color);
+  background-color: var(--accent-gold);
   color: var(--background-color);
   cursor: pointer;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
 a.button:hover,
@@ -195,19 +234,28 @@ button:hover,
 button:focus {
   background-color: var(--link-hover-color);
   cursor: pointer;
+  transform: translateY(-1px);
 }
 
 button:disabled,
 button:disabled:hover {
   background-color: var(--light-color);
-  cursor: unset;
+  color: var(--text-secondary);
+  cursor: not-allowed;
+  transform: none;
 }
 
 a.button.secondary,
 button.secondary {
-  background-color: unset;
-  border: 2px solid currentcolor;
-  color: var(--text-color);
+  background-color: transparent;
+  border: 2px solid var(--accent-gold);
+  color: var(--accent-gold);
+}
+
+a.button.secondary:hover,
+button.secondary:hover {
+  background-color: var(--accent-gold);
+  color: var(--background-color);
 }
 
 main img {
@@ -254,4 +302,25 @@ main .section.highlight {
   background-color: var(--light-color);
   margin: 0;
   padding: 40px 0;
+}
+
+/* Etihad-inspired dark theme adjustments */
+main > div {
+  background-color: var(--background-color);
+}
+
+main .section {
+  background-color: var(--background-color);
+}
+
+main .section.light {
+  background-color: var(--light-color);
+}
+
+p, li, dd {
+  color: var(--text-color);
+}
+
+p.secondary, .text-secondary {
+  color: var(--text-secondary);
 }

@@ -1,0 +1,49 @@
+.booking-bar-wrapper {
+  background-color: var(--light-color);
+  border-bottom: 1px solid rgba(217, 131, 28, 0.2);
+}
+
+.booking-bar-inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-end;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 24px;
+}
+
+.booking-bar-field {
+  flex: 1 1 140px;
+  min-width: 0;
+}
+
+.booking-bar-field label {
+  display: block;
+  font-size: var(--body-font-size-xs);
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.booking-bar-field input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.booking-bar-actions {
+  flex: 0 0 auto;
+}
+
+.booking-bar-actions .button {
+  margin: 0;
+}
+
+@media (width >= 900px) {
+  .booking-bar-inner {
+    padding: 24px 32px;
+    flex-wrap: nowrap;
+  }
+  .booking-bar-field {
+    flex: 1 1 0;
+  }
+}

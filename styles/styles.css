@@ -11,16 +11,18 @@
  */
 
 :root {
-  /* Etihad-inspired color palette */
-  --background-color: #2a2520; /* Midnight dune - dark brown/grey */
-  --light-color: #3d3630; /* Lighter dark for sections */
-  --dark-color: #1a1613; /* Darker for contrast */
-  --text-color: #ffffff; /* White text on dark */
-  --text-secondary: #c9c8ba; /* Silver/grey for secondary text */
-  --link-color: #d3831c; /* Gold/chocolate accent */
-  --link-hover-color: #e89a2e; /* Lighter gold on hover */
-  --accent-gold: #d3831c; /* Primary gold */
-  --accent-silver: #c9c8ba; /* Silver accent */
+  /* Etihad colour scheme: dark teal/slate + gold */
+  --background-color: #212b32; /* Dark teal/slate - main background */
+  --light-color: #2c3840; /* Slightly lighter for sections */
+  --dark-color: #1a2228; /* Darker for sidebar/nav */
+  --text-color: #ffffff;
+  --text-secondary: #b0b8bc; /* Light grey for secondary text */
+  --link-color: #c18b3d; /* Etihad gold/orange accent */
+  --link-hover-color: #d49a4a;
+  --accent-gold: #c18b3d;
+  --accent-silver: #b0b8bc;
+  --sidebar-bg: #212b32;
+  --sidebar-top-bar: #3d5a6c; /* Light blue strip above logo */
 
   /* fonts - humanistic sans-serif similar to Etihad Altis */
   --body-font-family: 'Source Sans Pro', 'Inter', roboto, roboto-fallback, sans-serif;
@@ -323,4 +325,15 @@ p, li, dd {
 
 p.secondary, .text-secondary {
   color: var(--text-secondary);
+}
+
+/* Left sidebar nav: offset main on desktop */
+@media (width >= 900px) {
+  main {
+    margin-left: 260px;
+    transition: margin-left 0.25s ease;
+  }
+  body.sidebar-collapsed main {
+    margin-left: 72px;
+  }
 }

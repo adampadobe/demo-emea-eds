@@ -62,6 +62,40 @@ This project is configured for web push with Adobe Journey Optimizer. Complete t
 
 ---
 
+## Troubleshooting: popup on local but not on live
+
+The browser’s “Allow notifications?” popup only appears when the user **clicks** the “Enable notifications” button (it’s not automatic). If you see it locally but not on live, check the following.
+
+### 1. Is the push-opt-in block on the live page?
+
+- The live URL (e.g. `main--demo-emea-eds--adampadobe.aem.live`) may be serving a **different page** or branch than preview (e.g. `*.aem.page` or Document Authoring).
+- Ensure the **same page** (or a page that includes the push-opt-in section) is published and loaded on live. In your Google Doc / source, you must have a section whose first cell is **push-opt-in** (and ideally a link or button text in the next cell).
+- On the live page, confirm you see the **“Enable notifications”** button. If you see **“Push not configured.”** instead, see step 2.
+
+### 2. Is push configured on the live origin?
+
+- The block needs `window.__pushConfig` (from `scripts/scripts.js`) and `window.alloy` (from Launch). If either is missing, the block shows “Push not configured.” and no button.
+- On the **live** tab, open DevTools → Console. Reload and check:
+  - No errors blocking Launch or the main script.
+  - Type `window.__pushConfig` and `window.alloy` – both should be defined after the page has loaded.
+- If Launch doesn’t load on live (CSP, wrong embed URL, or 404), fix that first (see AEP_CONFIG.md). The same `LAUNCH_SCRIPT_URL` in `scripts/scripts.js` is used for both preview and live unless you switch by environment.
+
+### 3. Are you actually clicking the button on live?
+
+- The permission prompt is shown only **in response to a user click** on “Enable notifications”. If you don’t click the button on the live page, the popup will never appear.
+
+### 4. Has permission already been set for the live origin?
+
+- The browser stores “Allow” or “Block” **per origin**. If you (or someone) already allowed or blocked notifications for the live domain, the browser will **not** show the popup again.
+- **Check:** In Chrome, click the lock/info icon in the address bar → Site settings → Notifications. If it’s “Allow” or “Block”, the popup won’t show again on that origin.
+- **To test again:** Use an **Incognito/Private** window, or another browser, or reset the site’s permissions for the live URL. Then open the live page and click “Enable notifications”.
+
+### 5. Console: “Subscription details have not changed”
+
+- That message means the Web SDK thinks a subscription (or permission state) for this origin is already stored and unchanged, so it doesn’t send again or re-prompt. On that origin you’ve either already granted or the SDK has a cached state. Use a fresh profile/incognito to force a new permission flow if needed.
+
+---
+
 ## Optional: Push tracking dataset
 
 To track push opens/clicks in AEP, create or use a dataset based on **CJM Push Tracking Experience Event** and set `trackingDatasetId` in the Web SDK `pushNotifications` config (in `scripts/scripts.js`) to that dataset’s ID.

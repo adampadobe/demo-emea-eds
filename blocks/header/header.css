@@ -1,10 +1,22 @@
-/* header and nav layout - Etihad-inspired dark theme */
+/* header and nav layout - Etihad-style dark teal sidebar */
 header .nav-wrapper {
-  background-color: var(--dark-color);
+  background-color: var(--sidebar-bg);
   width: 100%;
   z-index: 2;
   position: fixed;
-  border-bottom: 1px solid rgba(217, 131, 28, 0.2); /* Subtle gold border */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Top accent bar (Etihad light blue strip) */
+header .nav-wrapper::before {
+  content: '';
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--sidebar-top-bar);
 }
 
 header nav {
@@ -31,22 +43,188 @@ header nav[aria-expanded='true'] {
   min-height: 100dvh;
 }
 
+/* Desktop: left sidebar nav (Etihad-style) */
 @media (width >= 900px) {
+  header .nav-wrapper::before {
+    display: block;
+  }
+
   header .nav-wrapper {
-    position: relative;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 260px;
+    height: 100vh;
+    max-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    border-bottom: none;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    z-index: 10;
+    transition: width 0.25s ease;
+  }
+
+  header .nav-wrapper.collapsed {
+    width: 72px;
+  }
+
+  header .nav-wrapper.collapsed .nav-brand-text,
+  header .nav-wrapper.collapsed .nav-sections .nav-link-label,
+  header .nav-wrapper.collapsed .nav-tools a span {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+  }
+
+  header .nav-wrapper.collapsed .nav-sections .nav-link {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
   }
 
   header nav {
     display: flex;
-    justify-content: space-between;
-    gap: 0 32px;
-    max-width: 1264px;
-    padding: 0 32px;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 0;
+    max-width: none;
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    padding: 0 0 24px;
+  }
+
+  header nav .nav-hamburger {
+    order: 0;
+  }
+
+  header .nav-brand {
+    order: 1;
+    flex-basis: auto;
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    margin-bottom: 0;
+  }
+
+  header .nav-sections {
+    order: 2;
+    flex: 1 1 auto;
+    align-self: stretch;
+    padding: 16px 0;
+  }
+
+  header nav .nav-sections ul {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li {
+    border-bottom: none;
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li > a,
+  header nav .nav-sections .nav-drop {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 24px;
+    min-height: 48px;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--text-color);
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li > a:hover,
+  header nav .nav-sections .nav-drop:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--accent-gold);
+  }
+
+  header nav .nav-sections .nav-link-icon {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    fill: currentColor;
+  }
+
+  header nav .nav-sections .nav-link-label {
+    white-space: nowrap;
+    transition: opacity 0.2s ease, width 0.2s ease;
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] > ul {
+    position: static;
+    width: 100%;
+    left: 0;
+    top: auto;
+    padding: 0 0 8px 24px;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li > ul::before {
+    display: none;
+  }
+
+  header nav .nav-sections .nav-drop::after {
+    position: absolute;
+    right: 24px;
+  }
+
+  header .nav-tools {
+    order: 3;
+    padding: 16px 24px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   header nav[aria-expanded='true'] {
     min-height: 0;
     overflow: visible;
+  }
+}
+
+/* Sidebar collapse button (desktop) */
+header .nav-collapse-btn {
+  display: none;
+  position: absolute;
+  top: 18px;
+  right: -14px;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  background: var(--light-color);
+  color: var(--dark-color);
+  cursor: pointer;
+  z-index: 11;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+header .nav-collapse-btn:hover {
+  background: #fff;
+}
+
+header .nav-collapse-btn svg {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.25s ease;
+}
+
+header .nav-wrapper.collapsed .nav-collapse-btn svg {
+  transform: rotate(180deg);
+}
+
+@media (width >= 900px) {
+  header .nav-collapse-btn {
+    display: flex;
   }
 }
 
@@ -276,3 +454,4 @@ header nav .nav-sections ul > li > ul > li {
 header nav .nav-tools {
   grid-area: tools;
 }
+

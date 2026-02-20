@@ -106,6 +106,10 @@ Use `curl` and `console.log` to inspect the HTML delivered by the backend and th
 
 Each block should be self-contained and re-useable, with CSS and JS files following the naming convention: `blockname.css`, `blockname.js`. Blocks should be responsive and accessible by default.
 
+### Icons
+
+Add SVG files under `icons/` (e.g. `icons/plane.svg`). In content, use `<span class="icon icon-{name}"></span>` (e.g. `icon icon-plane`); the core script turns these into `<img src=".../icons/{name}.svg">`. In blocks, use `<img src="${window.hlx.codeBasePath}/icons/{name}.svg" alt="...">` or inject inline SVG. See `docs/ETIHAD_REPLICATION_AND_LAUNCH.md` for Etihad-style nav icons and Launch custom HTML.
+
 ### Auto-Blocking
 
 Auto-blocking is the process of creating blocks that aren't explicitly authored into the page based on patterns in the content. See the `buildAutoBlocks` function in `scripts.js`.

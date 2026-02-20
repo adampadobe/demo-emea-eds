@@ -174,11 +174,36 @@ header nav[aria-expanded='true'] {
     color: var(--accent-gold);
   }
 
-  header nav .nav-sections .nav-link-icon {
+  /* Icon wrapper (Etihad: two imgs – default + hover) */
+  header nav .nav-sections .nav-link-icon.icon-menu {
+    display: flex;
     flex-shrink: 0;
     width: 22px;
     height: 22px;
-    fill: currentColor;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+  }
+
+  header nav .nav-sections .nav-link-icon .menu-icon,
+  header nav .nav-sections .nav-link-icon .menu-icon-hover {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    transition: opacity 0.2s ease;
+  }
+
+  header nav .nav-sections .nav-link-icon .menu-icon-hover {
+    opacity: 0;
+  }
+
+  header nav .nav-sections .nav-link:hover .nav-link-icon .menu-icon {
+    opacity: 0;
+  }
+
+  header nav .nav-sections .nav-link:hover .nav-link-icon .menu-icon-hover {
+    opacity: 1;
   }
 
   header nav .nav-sections .nav-link-label {

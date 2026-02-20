@@ -108,28 +108,47 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   }
 }
 
-/** Etihad-style nav icons (white line icons) by label text */
-const NAV_ICONS = {
-  book: '<svg class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19l2-10h12l2 10M4 19h16M6 9l6-4 6 4M12 5v14"/></svg>',
-  manage: '<svg class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20M6 14h4"/></svg>',
-  'check-in': '<svg class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M10 14l2 2 4-4"/></svg>',
-  'flight status': '<svg class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>',
-  plan: '<svg class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>',
-  offers: '<svg class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 12V8H4v4M20 12l-2 8H6l-2-8M20 12H4"/><path d="M12 6c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z"/></svg>',
-  loyalty: '<svg class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l2.4 7.4h7.6l-6 4.6 2.3 7-6.3-4.6-6.3 4.6 2.3-7-6-4.6h7.6z"/></svg>',
-  help: '<svg class="nav-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>',
+/** Etihad-style nav icons from icons/ folder (normal + filled for hover) */
+const NAV_ICON_FILES = {
+  book: { icon: 'plane-2.svg', iconHover: 'plane-2-filled.svg' },
+  manage: { icon: 'plane-in-ticket.svg', iconHover: 'plane-in-ticket-filled.svg' },
+  'check-in': { icon: 'Check-in.svg', iconHover: 'Check-in-filled.svg' },
+  'flight status': { icon: 'flight-status-icon-plain.svg', iconHover: 'flight-status-icon-filled.svg' },
+  plan: { icon: 'plane-detail.svg', iconHover: 'plane-detail-filled.svg' },
+  offers: { icon: 'Destination.svg', iconHover: 'Destination-filled.svg' },
+  loyalty: { icon: 'loyalty.svg', iconHover: 'loyalty-filled.svg' },
+  help: { icon: 'Help2-icon-new.svg', iconHover: 'help-filled.svg' },
 };
 
-function getIconForLabel(text) {
+function getIconFilesForLabel(text) {
   const key = (text || '').toLowerCase().trim();
-  return NAV_ICONS[key] || NAV_ICONS.book;
+  return NAV_ICON_FILES[key] || NAV_ICON_FILES.book;
+}
+
+function iconImg(src, className, alt) {
+  const img = document.createElement('img');
+  img.src = `${window.hlx?.codeBasePath || ''}/icons/${src}`;
+  img.alt = alt;
+  img.className = className;
+  img.loading = 'lazy';
+  return img;
 }
 
 function decorateNavLink(linkOrDrop) {
   const label = (linkOrDrop.textContent || '').trim();
-  const icon = getIconForLabel(label);
+  const { icon, iconHover } = getIconFilesForLabel(label);
+  const base = window.hlx?.codeBasePath || '';
   linkOrDrop.classList.add('nav-link');
-  linkOrDrop.innerHTML = `${icon}<span class="nav-link-label">${label}</span>`;
+  linkOrDrop.innerHTML = '';
+  const iconWrap = document.createElement('span');
+  iconWrap.className = 'icon-menu nav-link-icon';
+  iconWrap.append(iconImg(icon, 'menu-icon', `${label} icon`));
+  iconWrap.append(iconImg(iconHover, 'menu-icon-hover', `${label} icon`));
+  linkOrDrop.appendChild(iconWrap);
+  const labelSpan = document.createElement('span');
+  labelSpan.className = 'nav-link-label';
+  labelSpan.textContent = label;
+  linkOrDrop.appendChild(labelSpan);
 }
 
 /**

@@ -62,6 +62,32 @@ This project is configured for web push with Adobe Journey Optimizer. Complete t
 
 ---
 
+## Where the notification text comes from (AJO + context data)
+
+The **title** and **body** text users see in the push are set in two places:
+
+### 1. In Journey Optimizer (primary)
+
+When you design the **Push** message in your journey, you set the **Title** and **Message body** in the channel action. That content is what AJO sends in the payload. If you see generic text like "New Notification" / "You have a new message" or "This is your web push" / "This is the body", that is the content currently configured in the **Push** activity in your journey. To change it:
+
+- Open the journey → select the **Push** activity → edit the message.
+- Set **Title** and **Message body** to the real copy you want (e.g. "Visit Muscat" / "Book your next trip to Oman.").
+
+### 2. In the service worker (context data override)
+
+This repo’s **`/sw.js`** receives the push payload and builds the browser `Notification`. It supports **context/custom data** so you can override or enrich title/body from AJO’s payload.
+
+- **Context data in payload:** If AJO sends custom fields (e.g. `customData`, `context`, or root-level keys), the service worker reads them. In **`sw.js`** it looks for:
+  - `data.customData`, `data.context`, `data.contextData`, or `data.custom`
+  - Then uses `custom.title`, `custom.body`, `custom.url`, `custom.icon`, `custom.tag` to override the main title/body/URL/icon/tag.
+- **Where to change behaviour:** Edit **`sw.js`** in the "Context data" section. You can:
+  - Map more AJO payload keys to `title` / `body` if AJO uses different names.
+  - Use custom fields (e.g. personalization tokens from AJO) as the notification text.
+
+So: set the main copy in **AJO**; use **context data** in **`sw.js`** only when you need to override or compute title/body from custom payload fields.
+
+---
+
 ## Troubleshooting: popup on local but not on live
 
 The browser’s “Allow notifications?” popup only appears when the user **clicks** the “Enable notifications” button (it’s not automatic). If you see it locally but not on live, check the following.

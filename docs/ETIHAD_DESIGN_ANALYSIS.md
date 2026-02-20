@@ -199,8 +199,7 @@ The following are implemented for **local preview** (do not deploy until you're 
 
 ### Local preview (no deploy)
 
-1. Install AEM CLI: `npm install -g @adobe/aem-cli`
-2. From repo root: `aem up`
-3. Open `http://localhost:3000` and load a page that uses the new blocks.
+1. From repo root run: `npx --yes @adobe/aem-cli up --port 3000` (no global install needed; see [README](../README.md#local-development)).
+2. Open `http://localhost:3000` and load a page that uses the new blocks.
 
 Add sections in your Google Doc with tables whose first cell is the block name above and the column structure listed.

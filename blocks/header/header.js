@@ -112,12 +112,12 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
 const NAV_ICON_FILES = {
   book: { icon: 'plane-2.svg', iconHover: 'plane-2-filled.svg' },
   manage: { icon: 'plane-in-ticket.svg', iconHover: 'plane-in-ticket-filled.svg' },
-  'check-in': { icon: 'Check-in.svg', iconHover: 'Check-in-filled.svg' },
+  'check-in': { icon: 'check-in.svg', iconHover: 'check-in-filled.svg' },
   'flight status': { icon: 'flight-status-icon-plain.svg', iconHover: 'flight-status-icon-filled.svg' },
   plan: { icon: 'plane-detail.svg', iconHover: 'plane-detail-filled.svg' },
-  offers: { icon: 'Destination.svg', iconHover: 'Destination-filled.svg' },
+  offers: { icon: 'destination.svg', iconHover: 'destination-filled.svg' },
   loyalty: { icon: 'loyalty.svg', iconHover: 'loyalty-filled.svg' },
-  help: { icon: 'Help2-icon-new.svg', iconHover: 'help-filled.svg' },
+  help: { icon: 'help2-icon-new.svg', iconHover: 'help-filled.svg' },
 };
 
 function getIconFilesForLabel(text) {

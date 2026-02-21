@@ -71,7 +71,7 @@ To inject **custom HTML** (or custom DOM nodes) from Launch:
 
 **In content (Document Authoring / Markdown):**
 
-- Use a **span** with classes **`icon`** and **`icon-{name}`** (e.g. `icon icon-plane`). The EDS script **decorateIcons** (in `aem.js`) turns these into `<img>` tags that load `/icons/{name}.svg`.
+- Use a **span** with classes **`icon`** and **`icon-{name}`** (e.g. `icon icon-plane`). The script **decorateIcons** (in `scripts.js`) fetches `/icons/{name}.svg` and **inlines** the SVG (or a data-URL image if the SVG contains `<style>`), so you can style icons with CSS (e.g. `fill: currentColor`).
 - Example: in a table or text block, add:  
   `<span class="icon icon-plane"></span>`  
   and after decoration it becomes an `<img>` pointing to `/icons/plane.svg`.

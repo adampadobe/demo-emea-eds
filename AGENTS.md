@@ -108,7 +108,7 @@ Each block should be self-contained and re-useable, with CSS and JS files follow
 
 ### Icons
 
-Add SVG files under `icons/` (e.g. `icons/plane.svg`). In content, use `<span class="icon icon-{name}"></span>` (e.g. `icon icon-plane`); the core script turns these into `<img src=".../icons/{name}.svg">`. In blocks, use `<img src="${window.hlx.codeBasePath}/icons/{name}.svg" alt="...">` or inject inline SVG. See `docs/ETIHAD_REPLICATION_AND_LAUNCH.md` for Etihad-style nav icons and Launch custom HTML.
+Add SVG files under `icons/` (e.g. `icons/plane.svg`). In content, use `<span class="icon icon-{name}"></span>` (e.g. `icon icon-plane`); `decorateIcons` in `scripts.js` fetches and inlines the SVG so you can style with CSS (e.g. `fill: currentColor`). In blocks, use `<img src="${window.hlx.codeBasePath}/icons/{name}.svg" alt="...">` or inject inline SVG. See `docs/ETIHAD_REPLICATION_AND_LAUNCH.md` for Etihad-style nav icons and Launch custom HTML.
 
 ### Auto-Blocking
 

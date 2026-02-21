@@ -3,7 +3,6 @@ import {
   loadHeader,
   loadFooter,
   decorateButtons,
-  decorateIcons,
   decorateSections,
   decorateBlocks,
   decorateTemplateAndTheme,
@@ -11,8 +10,77 @@ import {
   loadSection,
   loadSections,
   loadCSS,
+  loadScript,
   getMetadata,
+  sampleRUM,
+  toCamelCase,
+  toClassName,
 } from './aem.js';
+
+const ICON_ROOT = '/icons';
+
+/**
+ * Fetches SVGs from the icons folder and inlines them (or data URL if SVG contains <style>).
+ * Enables CSS styling (e.g. fill: currentColor) and avoids extra network requests per icon.
+ * @param {Element} element - Container to search for span.icon.icon-{name}
+ * @param {string} prefix - Optional path prefix before /icons (e.g. '' or '/path')
+ */
+export function decorateIcons(element = document, prefix = '') {
+  const base = `${window.hlx?.codeBasePath || ''}${prefix}${ICON_ROOT}`;
+  element.querySelectorAll('span.icon').forEach((span) => {
+    const iconClass = Array.from(span.classList).find((c) => c.startsWith('icon-'));
+    if (!iconClass) return;
+    const iconName = iconClass.substring(5);
+    fetch(`${base}/${iconName}.svg`)
+      .then((resp) => (resp.ok ? resp.text() : null))
+      .then((iconHTML) => {
+        if (!iconHTML) return;
+        if (iconHTML.match(/<style/i)) {
+          const img = document.createElement('img');
+          img.src = `data:image/svg+xml,${encodeURIComponent(iconHTML)}`;
+          img.alt = iconName;
+          img.loading = 'lazy';
+          span.append(img);
+        } else {
+          span.innerHTML = iconHTML;
+        }
+      })
+      .catch(() => { /* ignore fetch errors */ });
+  });
+}
+
+/** Audiences for AEM Experimentation plugin (experiments, campaigns, segmentation) */
+const AUDIENCES = {
+  mobile: () => window.innerWidth < 600,
+  desktop: () => window.innerWidth >= 600,
+};
+
+/**
+ * Gets all metadata elements that match the given scope (for experimentation plugin).
+ * @param {string} scope - The scope/prefix for the metadata (e.g. 'campaign', 'audience')
+ * @returns {Object} Key-value map of metadata in that scope
+ */
+export function getAllMetadata(scope) {
+  return [...document.head.querySelectorAll(`meta[property^="${scope}:"],meta[name^="${scope}-"]`)]
+    .reduce((res, meta) => {
+      const id = toClassName(meta.name
+        ? meta.name.substring(scope.length + 1)
+        : meta.getAttribute('property').split(':')[1]);
+      res[id] = meta.getAttribute('content');
+      return res;
+    }, {});
+}
+
+/** Execution context for AEM Experimentation plugin */
+const pluginContext = {
+  getAllMetadata,
+  getMetadata,
+  loadCSS,
+  loadScript,
+  sampleRUM,
+  toCamelCase,
+  toClassName,
+};
 /**
  * Builds hero block and prepends to main in a new section.
  * @param {Element} main The container element
@@ -106,6 +174,14 @@ async function loadEager(doc) {
   document.documentElement.lang = 'en';
   decorateTemplateAndTheme();
 
+  // AEM Experimentation plugin (experiments, campaigns, audiences) – run early in eager phase
+  if (getMetadata('experiment')
+    || Object.keys(getAllMetadata('campaign')).length
+    || Object.keys(getAllMetadata('audience')).length) {
+    const { loadEager: runEager } = await import('../plugins/experimentation/src/index.js');
+    await runEager(document, { audiences: AUDIENCES }, pluginContext);
+  }
+
   // Load Launch via JS so CSP strict-dynamic allows it (script loaded by nonced scripts.js is trusted).
   const launchScript = document.createElement('script');
   launchScript.src = LAUNCH_SCRIPT_URL;
@@ -155,6 +231,14 @@ async function loadLazy(doc) {
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
+
+  // AEM Experimentation plugin – authoring overlay and lazy behavior
+  if (getMetadata('experiment')
+    || Object.keys(getAllMetadata('campaign')).length
+    || Object.keys(getAllMetadata('audience')).length) {
+    const { loadLazy: runLazy } = await import('../plugins/experimentation/src/index.js');
+    await runLazy(document, { audiences: AUDIENCES }, pluginContext);
+  }
 }
 
 /**

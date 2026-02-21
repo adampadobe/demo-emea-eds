@@ -191,7 +191,25 @@ export default async function decorate(block) {
     navSections.querySelectorAll(':scope .default-content-wrapper > ul > li').forEach((navSection) => {
       const link = navSection.querySelector(':scope > a');
       if (link) decorateNavLink(link);
-      if (navSection.querySelector(':scope > ul')) navSection.classList.add('nav-drop');
+      const subUl = navSection.querySelector(':scope > ul');
+      if (subUl) {
+        navSection.classList.add('nav-drop');
+        // Back button for flyout sub-menu (Etihad-style)
+        const backBtn = document.createElement('button');
+        backBtn.type = 'button';
+        backBtn.className = 'nav-flyout-back';
+        backBtn.setAttribute('aria-label', 'Close submenu');
+        backBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>';
+        backBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleAllNavSections(navSections, false);
+          navSection.setAttribute('aria-expanded', 'false');
+        });
+        const backLi = document.createElement('li');
+        backLi.className = 'nav-flyout-back-wrap';
+        backLi.append(backBtn);
+        subUl.prepend(backLi);
+      }
       navSection.addEventListener('click', (e) => {
         if (isDesktop.matches && navSection.classList.contains('nav-drop')) {
           e.preventDefault();
